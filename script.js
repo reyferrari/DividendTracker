@@ -1,6 +1,7 @@
-// Function to fetch data from Yahoo Finance API
+// Function to fetch data from Alpha Vantage API
 async function fetchData(symbol) {
-    const response = await fetch(`https://query1.finance.yahoo.com/v7/finance/options/%7Bsymbol%7D`);
+    const apiKey = 'YOUR_API_KEY'; // Replace 'YOUR_API_KEY' with your actual API key from Alpha Vantage
+    const response = await fetch(`https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY_ADJUSTED&symbol=${symbol}&apikey=${apiKey}`);
     const data = await response.json();
     return data;
 }
@@ -13,7 +14,9 @@ async function populateTable() {
 
     for (const symbol of stocks) {
         const stockData = await fetchData(symbol);
-        const exDivDate = new Date(stockData.quoteResponse.result[0].exDividendDate * 1000).toDateString();
+        const monthlySeries = stockData['Monthly Adjusted Time Series'];
+        const latestMonth = Object.keys(monthlySeries)[0];
+        const exDivDate = new Date(latestMonth).toDateString();
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${symbol}</td>
@@ -41,7 +44,7 @@ function filterTable() {
     const filter = input.value.toUpperCase();
     const table = document.getElementById('stockTable');
     const rows = table.getElementsByTagName('tr');
-
+    
     for (let i = 0; i < rows.length; i++) {
         const cells = rows[i].getElementsByTagName('td')[0];
         if (cells) {
@@ -51,7 +54,7 @@ function filterTable() {
             } else {
                 rows[i].style.display = 'none';
             }
-        }
+        }       
     }
 }
 
