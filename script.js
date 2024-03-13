@@ -1,6 +1,6 @@
 // Function to fetch data from Yahoo Finance API
 async function fetchData(symbol) {
-    const response = await fetch(`https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbol}`);
+    const response = await fetch(`https://query1.finance.yahoo.com/v7/finance/options/%7Bsymbol%7D`);
     const data = await response.json();
     return data;
 }
